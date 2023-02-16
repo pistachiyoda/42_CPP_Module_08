@@ -1,58 +1,76 @@
 #include "Span.hpp"
 
 #include <iostream>
+#include <ctime>
+#include <cstdlib>
 
 int main()
 {
-    Span sp = Span(5);
-
-    sp.addNumber(5);
+    std::cout << "=== 2 elements simple test ====" << std::endl;
+    Span sp = Span(2);
     sp.addNumber(3);
     sp.addNumber(17);
-    sp.addNumber(9);
-    sp.addNumber(11);
 
-    std::cout << sp.shortestSpan() << std::endl;
-    std::cout << sp.longestSpan() << std::endl;
+    std::cout << sp.shortestSpan() << std::endl; // 14
+    std::cout << sp.longestSpan() << std::endl;  // 14
 
-    try
-    {
+    try {
         sp.addNumber(100);
     }
-    catch (const Span::FilledException &e)
-    {
+    catch (const Span::FilledException &e) {
         std::cerr << "filled" << std::endl;
     }
 
-    Span longSpan = Span(20000);
-    std::vector<int> numbers(15000, 100); // 15000の要素を100で初期化
-    longSpan.addNumbers(numbers.begin(), numbers.end());
-    std::cout << longSpan.getNumbers()[10000] << std::endl;
+    std::cout << "=== numerous numbers test ====" << std::endl;
+    unsigned int bigNum = 20000;
+    Span longSp = Span(bigNum);
+    srand((unsigned int)time(NULL));
+    std::vector<int> numbers;
+    for (unsigned int i = 0; i < bigNum; i++) {
+        numbers.push_back(rand());
+    } 
+    longSp.addNumbers(numbers.begin(), numbers.end());
 
-    try
-    {
-        longSpan.addNumbers(numbers.begin(), numbers.end());
+    std::cout << longSp.shortestSpan() << std::endl;
+    std::cout << longSp.longestSpan() << std::endl;
+
+    try {
+        longSp.addNumbers(numbers.begin(), numbers.end());
     }
-    catch (const Span::FilledException &e)
-    {
+    catch (const Span::FilledException &e) {
         std::cerr << "filled" << std::endl;
     }
 
-    Span emptySpan = Span();
-    try
-    {
-        emptySpan.shortestSpan();
+    std::cout << "=== empty error test ====" << std::endl;
+    Span emptySp = Span();
+
+    try {
+        emptySp.shortestSpan();
     }
-    catch (const Span::NoSpanException &e)
-    {
-        std::cerr << "no span" << std::endl;
+    catch (const Span::NoSpanException &e) {
+        std::cerr << "no enogh span" << std::endl;
     }
-    try
-    {
-        emptySpan.longestSpan();
+    try {
+        emptySp.longestSpan();
     }
-    catch (const Span::NoSpanException &e)
-    {
-        std::cerr << "no span" << std::endl;
+    catch (const Span::NoSpanException &e) {
+        std::cerr << "no enogh span" << std::endl;
+    }
+
+    std::cout << "=== one element error test ====" << std::endl;
+    Span oneElementSp = Span(1);
+    oneElementSp.addNumber(1);
+
+    try {
+        oneElementSp.shortestSpan();
+    }
+    catch (const Span::NoSpanException &e) {
+        std::cerr << "no enogh span" << std::endl;
+    }
+    try {
+        oneElementSp.longestSpan();
+    }
+    catch (const Span::NoSpanException &e) {
+        std::cerr << "no enogh span" << std::endl;
     }
 }
